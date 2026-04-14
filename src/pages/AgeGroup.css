@@ -1,0 +1,86 @@
+/* ====== Age Page Layout ====== */
+.age-page { padding-top: 72px; min-height: 100vh; }
+.age-page.dark-mode { background: #0F172A; color: #E2E8F0; }
+.age-page.dark-mode .header { background: rgba(15,23,42,0.9); border-bottom-color: rgba(255,255,255,0.06); }
+.age-page.dark-mode .nav-links a { color: #94A3B8; }
+.age-page.dark-mode .nav-links a:hover { color: #00F5D4; background: rgba(0,245,212,0.08); }
+
+.back-nav { padding: 1rem 0; }
+.back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--neutral-500); font-size: 0.9rem; transition: color 0.15s; }
+.back-link:hover { color: var(--brand-primary); }
+.age-page.dark-mode .back-link { color: #64748B; }
+.age-page.dark-mode .back-link:hover { color: #00F5D4; }
+
+/* ====== Age Hero ====== */
+.age-hero { padding: 4rem 0; position: relative; overflow: hidden; }
+.age-hero-content { display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; }
+.age-hero h1 { font-size: 2.8rem; margin-bottom: 1rem; }
+.age-hero h1 span { display: inline; }
+.age-hero p { font-size: 1.15rem; line-height: 1.7; max-width: 600px; }
+.age-hero-mascot { width: 200px; height: auto; animation: float 4s ease-in-out infinite; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 1rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem; border: 1px solid; }
+
+/* ====== Topics ====== */
+.topics-section { padding: 4rem 0; }
+.topics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; }
+.topic-card { background: white; border-radius: var(--radius-lg); padding: 1.5rem; border: 1px solid var(--neutral-200); transition: all 0.25s ease; cursor: pointer; position: relative; overflow: hidden; }
+.age-page.dark-mode .topic-card { background: #1E293B; border-color: #334155; }
+.age-page.dark-mode .topic-card:hover { border-color: var(--gp); }
+.age-page.dark-mode .topic-card h3 { color: #F1F5F9; }
+.age-page.dark-mode .topic-card p { color: #94A3B8; }
+.age-page.dark-mode .topic-card-number { color: white; opacity: 0.04; }
+.topic-card-number { position: absolute; top: 0.75rem; right: 0.75rem; font-family: var(--font-display); font-size: 3rem; font-weight: 900; opacity: 0.06; line-height: 1; }
+.topic-card-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
+.topic-card h3 { font-size: 1.1rem; color: var(--neutral-900); margin-bottom: 0.5rem; }
+.topic-card p { color: var(--neutral-500); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem; }
+.topic-card-meta { display: flex; align-items: center; gap: 1rem; font-size: 0.8rem; color: var(--neutral-400); flex-wrap: wrap; }
+.age-page.dark-mode .topic-card-meta span { color: #64748B; }
+
+/* ====== Games ====== */
+.games-section { padding: 4rem 0; background: var(--neutral-50); }
+.age-page.dark-mode .games-section { background: #0D1321; }
+.age-page.dark-mode .section-header h2 { color: #F1F5F9; }
+.age-page.dark-mode .section-header p { color: #64748B; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+.game-card { background: white; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--neutral-200); transition: all 0.25s ease; cursor: pointer; }
+.age-page.dark-mode .game-card { background: #1E293B; border-color: #334155; }
+.age-page.dark-mode .game-card:hover { border-color: #00F5D4; }
+.game-card-preview { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
+.game-card[data-difficulty="easy"] .game-card-preview { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
+.game-card[data-difficulty="medium"] .game-card-preview { background: linear-gradient(135deg, #D1FAE5, #6EE7B7); }
+.game-card[data-difficulty="hard"] .game-card-preview { background: linear-gradient(135deg, #C7D2FE, #818CF8); }
+.age-page.dark-mode .game-card[data-difficulty="easy"] .game-card-preview { background: linear-gradient(135deg, #1E293B, #0C4A6E); }
+.age-page.dark-mode .game-card[data-difficulty="medium"] .game-card-preview { background: linear-gradient(135deg, #1E293B, #064E3B); }
+.age-page.dark-mode .game-card[data-difficulty="hard"] .game-card-preview { background: linear-gradient(135deg, #1E293B, #312E81); }
+.game-badge { position: absolute; top: 0.75rem; right: 0.75rem; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 9999px; color: white; text-transform: uppercase; letter-spacing: 0.05em; }
+.game-card[data-difficulty="easy"] .game-badge { background: #F59E0B; }
+.game-card[data-difficulty="medium"] .game-badge { background: #10B981; }
+.game-card[data-difficulty="hard"] .game-badge { background: #6366F1; }
+.game-card-body { padding: 1.25rem; }
+.game-card-body h3 { font-size: 1.1rem; color: var(--neutral-900); margin-bottom: 0.5rem; }
+.game-card-body p { color: var(--neutral-500); font-size: 0.9rem; line-height: 1.6; }
+.age-page.dark-mode .game-card-body h3 { color: #F1F5F9; }
+.age-page.dark-mode .game-card-body p { color: #94A3B8; }
+.game-card-footer { padding: 0 1.25rem 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+.game-duration { font-size: 0.8rem; color: var(--neutral-400); display: flex; align-items: center; gap: 4px; }
+.age-page.dark-mode .game-duration { color: #64748B; }
+.game-play-btn { background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark)); color: white; border: none; padding: 8px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.25s ease; }
+.game-play-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(14,165,233,0.4); }
+.age-page.dark-mode .game-play-btn { background: linear-gradient(135deg, #00F5D4, #0D9488); color: #0F172A; }
+.age-page.dark-mode .game-play-btn:hover { box-shadow: 0 4px 15px rgba(0,245,212,0.4); }
+
+.level-label { font-family: var(--font-display); margin-bottom: 1.5rem; color: var(--neutral-600); font-weight: 700; }
+.age-page.dark-mode .level-label { color: #64748B; }
+
+/* ====== Age Footer ====== */
+.age-footer { background: var(--neutral-900); color: var(--neutral-400); font-size: 0.85rem; }
+.age-page.dark-mode .age-footer { background: #0A0F1A; border-top: 1px solid #1E293B; }
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+  .age-hero-content { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+  .age-hero h1 { font-size: 2rem; }
+  .age-hero-mascot { width: 150px; margin: 0 auto; }
+  .topics-grid { grid-template-columns: 1fr; }
+  .games-grid { grid-template-columns: 1fr; }
+}

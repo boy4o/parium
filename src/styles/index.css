@@ -1,0 +1,115 @@
+/* ========================================
+   ПариУМ — Design System (React)
+   "Парите обичат умните!"
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --brand-primary: #0EA5E9;
+  --brand-primary-dark: #0284C7;
+  --brand-primary-light: #7DD3FC;
+  --brand-secondary: #FFD166;
+  --brand-accent: #06D6A0;
+
+  --neutral-50: #F8FAFC;
+  --neutral-100: #F1F5F9;
+  --neutral-200: #E2E8F0;
+  --neutral-300: #CBD5E1;
+  --neutral-400: #94A3B8;
+  --neutral-500: #64748B;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1E293B;
+  --neutral-900: #0F172A;
+
+  --age-5-6-primary: #FFD166;
+  --age-5-6-secondary: #EF8354;
+  --age-5-6-bg: #FFFBEB;
+  --age-7-8-primary: #06D6A0;
+  --age-7-8-secondary: #118AB2;
+  --age-7-8-bg: #ECFDF5;
+  --age-9-10-primary: #118AB2;
+  --age-9-10-secondary: #06D6A0;
+  --age-9-10-bg: #EFF6FF;
+  --age-11-14-primary: #6C63FF;
+  --age-11-14-secondary: #2D3436;
+  --age-11-14-bg: #EEF2FF;
+  --age-15-18-primary: #00F5D4;
+  --age-15-18-secondary: #1A1A2E;
+  --age-15-18-bg: #0F172A;
+
+  --font-display: 'Nunito', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 6px 10px rgba(0,0,0,0.08);
+  --shadow-xl: 0 20px 50px rgba(0,0,0,0.12), 0 12px 24px rgba(0,0,0,0.08);
+  --shadow-glow: 0 0 30px rgba(14,165,233,0.3);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  color: var(--neutral-800);
+  background: var(--neutral-50);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); font-weight: 800; line-height: 1.2; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; height: auto; display: block; }
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.section { padding: 6rem 0; }
+.text-gradient {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 14px 28px; border-radius: var(--radius-full);
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  cursor: pointer; border: none; transition: all 0.25s ease;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
+  color: white; box-shadow: 0 4px 15px rgba(14,165,233,0.35);
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(14,165,233,0.45); }
+.btn-secondary {
+  background: white; color: var(--neutral-700);
+  border: 2px solid var(--neutral-200); box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover { border-color: var(--brand-primary); color: var(--brand-primary); transform: translateY(-2px); }
+.btn-icon { font-size: 1.2em; }
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+@keyframes float-coin {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(15deg); }
+}
+@keyframes pulse-slow {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 1rem; }
+  .section { padding: 3rem 0; }
+  .btn { padding: 12px 20px; font-size: 0.9rem; }
+}

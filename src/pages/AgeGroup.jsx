@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { AGE_GROUPS } from '../data/ageGroups';
 import './AgeGroup.css';
 
+const BASE = import.meta.env.BASE_URL;
+
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
@@ -35,7 +37,7 @@ export default function AgeGroup() {
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
             {isDark
               ? <div style={{ fontSize: '5rem', textAlign: 'center', animation: 'float 4s ease-in-out infinite' }}>{group.emoji}</div>
-              : <img src="/findo.png" alt="ФинДо" className="age-hero-mascot" style={{ opacity: group.id === '11-14' ? 0.8 : 1 }} />
+              : <img src={`${BASE}findo.png`} alt="ФинДо" className="age-hero-mascot" style={{ opacity: group.id === '11-14' ? 0.8 : 1 }} />
             }
           </motion.div>
         </div>

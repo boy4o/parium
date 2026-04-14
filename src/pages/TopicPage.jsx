@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { AGE_GROUPS } from '../data/ageGroups';
 import { LESSONS } from '../data/lessons';
+
+const BASE = import.meta.env.BASE_URL;
 import './TopicPage.css';
 
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
@@ -56,7 +58,7 @@ export default function TopicPage() {
                   {section.type === 'intro' && (
                     <div className="lesson-intro">
                       <div className="lesson-mascot-bubble">
-                        <img src="/findo.png" alt="ФинДо" className="lesson-mascot-small" />
+                        <img src={`${BASE}findo.png`} alt="ФинДо" className="lesson-mascot-small" />
                         <div className="speech-bubble">
                           <p>{section.text}</p>
                         </div>

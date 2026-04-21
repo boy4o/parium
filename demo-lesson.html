@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПариУМ — Анимиран урок за деца (5-6 г.)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 50%, #FFFBEB 100%);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ===== PLAYER SHELL ===== */
+  .player {
+    max-width: 900px;
+    margin: 1rem auto;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    overflow: hidden;
+    height: calc(100vh - 2rem);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .player-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+  }
+  .player-header h2 { font-size: 1.1rem; font-weight: 800; }
+  .player-header .ep-badge {
+    background: rgba(255,255,255,0.25);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  /* ===== STAGE ===== */
+  .stage {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #E0F2FE 0%, #BAE6FD 100%);
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    pointer-events: none;
+  }
+  .scene.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  /* ===== FINDO CHARACTER ===== */
+  .findo-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .findo {
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, #06B6D4, #0891B2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+    animation: findo-bob 3s ease-in-out infinite;
+    position: relative;
+  }
+  .findo.talking {
+    animation: findo-talk 0.3s ease-in-out infinite alternate;
+  }
+  @keyframes findo-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes findo-talk {
+    0% { transform: scale(1) translateY(0); }
+    100% { transform: scale(1.05) translateY(-5px); }
+  }
+
+  /* Speech bubble */
+  .speech-bubble {
+    background: white;
+    border-radius: 20px;
+    padding: 1.2rem 1.8rem;
+    max-width: 600px;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1E293B;
+    line-height: 1.6;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    position: relative;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 12px solid transparent;
+    border-bottom-color: white;
+    border-top: 0;
+  }
+
+  /* Word highlighting during speech */
+  .word { display: inline; transition: color 0.2s; }
+  .word.spoken { color: #F59E0B; }
+
+  /* ===== VISUAL ELEMENTS ===== */
+  .visual-area {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 120px;
+  }
+
+  .anim-item {
+    font-size: 3.5rem;
+    opacity: 0;
+    transform: translateY(30px) scale(0.5);
+    animation: pop-in 0.5s ease forwards;
+  }
+  @keyframes pop-in {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .coin-item {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; font-weight: 900;
+    opacity: 0;
+    animation: coin-drop 0.6s ease forwards;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  }
+  .coin-item.c1 { background: linear-gradient(135deg, #FCD34D, #F59E0B); color: #92400E; }
+  .coin-item.c2 { background: linear-gradient(135deg, #D1D5DB, #9CA3AF); color: #374151; }
+  .coin-item.c5 { background: linear-gradient(135deg, #FCD34D, #D97706); color: #78350F; }
+
+  @keyframes coin-drop {
+    0% { opacity: 0; transform: translateY(-60px) rotate(-180deg); }
+    60% { transform: translateY(10px) rotate(10deg); }
+    100% { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  /* Product cards */
+  .product-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    opacity: 0;
+    animation: slide-up 0.5s ease forwards;
+    width: 110px;
+  }
+  .product-card .emoji { font-size: 2.5rem; }
+  .product-card .name { font-size: 0.9rem; font-weight: 700; margin: 0.3rem 0; }
+  .product-card .price { color: #16A34A; font-weight: 800; font-size: 1.1rem; }
+
+  @keyframes slide-up {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Need vs Want */
+  .nw-container { display: flex; gap: 2rem; margin-top: 1rem; }
+  .nw-box {
+    background: white;
+    border-radius: 16px;
+    padding: 1.2rem;
+    min-width: 180px;
+    text-align: center;
+    opacity: 0;
+    animation: slide-up 0.5s ease forwards;
+  }
+  .nw-box.need { border: 3px solid #16A34A; }
+  .nw-box.want { border: 3px solid #8B5CF6; }
+  .nw-box h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .nw-box .items { font-size: 2rem; }
+
+  /* Piggy bank */
+  .piggy-scene {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .piggy { font-size: 6rem; animation: piggy-shake 2s ease-in-out infinite; }
+  @keyframes piggy-shake {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+  }
+  .piggy-coins {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .piggy-coin-anim {
+    font-size: 1.8rem;
+    opacity: 0;
+    animation: fly-to-piggy 0.8s ease forwards;
+  }
+  @keyframes fly-to-piggy {
+    0% { opacity: 1; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-40px) scale(1.2); }
+    100% { opacity: 0; transform: translateY(-80px) scale(0.3); }
+  }
+
+  /* Progress bar */
+  .progress-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 1rem;
+    background: #F8FAFC;
+  }
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    justify-content: center;
+  }
+  .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #E2E8F0;
+    transition: all 0.3s;
+  }
+  .dot.active { background: #F59E0B; transform: scale(1.3); }
+  .dot.done { background: #16A34A; }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #FEF3C7, #FFF7ED);
+  }
+  .ctrl-btn {
+    border: none;
+    border-radius: 50%;
+    width: 52px; height: 52px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    background: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+  .ctrl-btn:hover { transform: scale(1.1); }
+  .ctrl-btn.play-btn {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    font-size: 1.6rem;
+    box-shadow: 0 5px 20px rgba(245,158,11,0.4);
+  }
+  .ctrl-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  .speed-select {
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 0.3rem 0.5rem;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  /* Volume indicator */
+  .volume-icon { position: absolute; top: 10px; right: 10px; font-size: 1.5rem; opacity: 0.6; }
+  .volume-icon.speaking { opacity: 1; animation: pulse-vol 0.5s ease-in-out infinite alternate; }
+  @keyframes pulse-vol { to { transform: scale(1.2); } }
+
+  /* Stars animation */
+  .stars-burst {
+    position: absolute;
+    top: 50%; left: 50%;
+    pointer-events: none;
+  }
+  .star-particle {
+    position: absolute;
+    font-size: 1.5rem;
+    animation: star-fly 1s ease forwards;
+    opacity: 0;
+  }
+  @keyframes star-fly {
+    0% { opacity: 1; transform: translate(0,0) scale(0); }
+    50% { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1.2); }
+    100% { opacity: 0; transform: translate(calc(var(--tx)*2), calc(var(--ty)*2)) scale(0); }
+  }
+
+  /* Intro overlay */
+  .intro-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.5s;
+  }
+  .intro-overlay.hidden { opacity: 0; pointer-events: none; }
+  .intro-title { font-size: 2rem; font-weight: 900; color: #92400E; margin-bottom: 0.5rem; text-align: center; }
+  .intro-subtitle { font-size: 1.2rem; color: #B45309; margin-bottom: 2rem; text-align: center; }
+  .start-btn {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(245,158,11,0.4);
+    transition: transform 0.2s;
+    animation: pulse-btn 2s ease-in-out infinite;
+  }
+  .start-btn:hover { transform: scale(1.08); }
+  @keyframes pulse-btn {
+    0%, 100% { box-shadow: 0 8px 25px rgba(245,158,11,0.4); }
+    50% { box-shadow: 0 8px 40px rgba(245,158,11,0.6); }
+  }
+
+  /* Floating bg elements */
+  .bg-float {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.15;
+    animation: bg-drift 15s linear infinite;
+  }
+  @keyframes bg-drift {
+    0% { transform: translateY(100vh) rotate(0); }
+    100% { transform: translateY(-100px) rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="player">
+  <div class="player-header">
+    <span class="ep-badge" id="epBadge">Епизод 1 от 5</span>
+    <h2>🐬 ПариУМ — Учи с ФинДо!</h2>
+    <span style="font-size:0.85rem" id="topicTitle">Какво са парите?</span>
+  </div>
+
+  <div class="stage" id="stage">
+    <!-- Floating background elements -->
+    <div class="bg-float" style="left:10%; animation-delay:0s;">🪙</div>
+    <div class="bg-float" style="left:30%; animation-delay:3s;">💰</div>
+    <div class="bg-float" style="left:60%; animation-delay:6s;">✨</div>
+    <div class="bg-float" style="left:80%; animation-delay:9s;">🌟</div>
+
+    <span class="volume-icon" id="volIcon">🔇</span>
+
+    <!-- Intro overlay -->
+    <div class="intro-overlay" id="introOverlay">
+      <div style="font-size:5rem; margin-bottom:1rem; animation: findo-bob 3s ease-in-out infinite;">🐬</div>
+      <div class="intro-title">🌟 Какво са парите? 🌟</div>
+      <div class="intro-subtitle">Епизод 1 — Учи с ФинДо!</div>
+      <button class="start-btn" onclick="startLesson()">▶️ Започни урока!</button>
+      <p style="margin-top:1rem; color:#92400E; font-size:0.9rem">🔊 Включи звука за най-добро изживяване!</p>
+    </div>
+
+    <!-- Scenes will be rendered by JS -->
+  </div>
+
+  <div class="progress-area">
+    <span style="font-size:0.8rem; color:#94A3B8; font-weight:600;" id="sceneCounter">0 / 0</span>
+    <div class="progress-dots" id="progressDots"></div>
+    <select class="speed-select" id="speedSelect" title="Скорост на четене">
+      <option value="0.7">🐢 Бавно</option>
+      <option value="0.85" selected>🐬 Нормално</option>
+      <option value="1.0">🐇 Бързо</option>
+    </select>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="prevBtn" onclick="prevScene()" disabled>⏮️</button>
+    <button class="ctrl-btn" id="replayBtn" onclick="replayScene()">🔄</button>
+    <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay()">▶️</button>
+    <button class="ctrl-btn" id="nextBtn" onclick="nextScene()">⏭️</button>
+    <button class="ctrl-btn" id="epListBtn" onclick="showEpisodeList()" title="Всички епизоди">📋</button>
+  </div>
+</div>
+
+<!-- Episode list modal -->
+<div id="epModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; display:none; align-items:center; justify-content:center;">
+  <div style="background:white; border-radius:20px; padding:2rem; max-width:400px; width:90%;">
+    <h3 style="margin-bottom:1rem; text-align:center;">📚 Епизоди</h3>
+    <div id="epList"></div>
+    <button onclick="hideEpisodeList()" style="margin-top:1rem; width:100%; padding:0.8rem; border:none; background:#F59E0B; color:white; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; font-family:inherit;">✖️ Затвори</button>
+  </div>
+</div>
+
+<script>
+// ============================================
+// EPISODES DATA — 5 animated lessons for 5-6yr
+// ============================================
+const EPISODES = [
+  {
+    id: 1,
+    title: 'Какво са парите?',
+    scenes: [
+      {
+        text: 'Здравей, приятелю! Аз съм ФинДо — умният делфин! 🐬',
+        visual: 'findo-wave',
+      },
+      {
+        text: 'Днес ще научим какво са ПАРИТЕ и защо са важни!',
+        visual: 'sparkles',
+      },
+      {
+        text: 'Парите са специални монети и банкноти, с които можем да КУПУВАМЕ неща.',
+        visual: 'coins-show',
+      },
+      {
+        text: 'Ето ги евро монетите! Едно евро, две евро, петдесет цента...',
+        visual: 'euro-coins',
+      },
+      {
+        text: 'А това са евро банкноти — петица, десетка и двайсетка!',
+        visual: 'euro-bills',
+      },
+      {
+        text: 'С парите можем да купим храна, дрехи и играчки!',
+        visual: 'products',
+      },
+      {
+        text: 'Но парите не растат по дърветата! Мама и тати ги ПЕЧЕЛЯТ на работа.',
+        visual: 'work',
+      },
+      {
+        text: 'Затова е важно да ги пазим и да ги харчим УМНО! 🧠',
+        visual: 'smart',
+      },
+      {
+        text: 'Браво, приятелю! Вече знаеш какво са парите! ⭐',
+        visual: 'celebrate',
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Монети и банкноти',
+    scenes: [
+      {
+        text: 'Здравей отново! Днес ФинДо ще ти покаже всички евро монети!',
+        visual: 'findo-wave',
+      },
+      {
+        text: 'Най-малката е един цент. Тя е мъничка и кафява.',
+        visual: 'cent-1',
+      },
+      {
+        text: 'После имаме 2 цента, 5 цента, 10 цента и 20 цента!',
+        visual: 'cents-all',
+      },
+      {
+        text: 'Петдесет цента е голяма и златиста! А едно евро има два цвята!',
+        visual: 'big-coins',
+      },
+      {
+        text: 'Две евро е най-ценната монета! Тя може да купи повече неща.',
+        visual: 'two-euro',
+      },
+      {
+        text: 'Банкнотите са от хартия. Пет евро е сива, десет — червена!',
+        visual: 'bills-show',
+      },
+      {
+        text: 'Запомни: Колкото по-голямо е числото, толкова повече може да купиш!',
+        visual: 'compare',
+      },
+      {
+        text: 'Супер! Вече познаваш монетите и банкнотите! 🎉',
+        visual: 'celebrate',
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: 'Нужди и желания',
+    scenes: [
+      {
+        text: 'Привет! Днес учим нещо много важно — НУЖДИ и ЖЕЛАНИЯ!',
+        visual: 'findo-wave',
+      },
+      {
+        text: 'НУЖДИ са нещата, без които не можем. Храна, вода, дрехи, дом.',
+        visual: 'needs',
+      },
+      {
+        text: 'ЖЕЛАНИЯ са нещата, които искаме, но можем без тях. Играчки, сладки, игри.',
+        visual: 'wants',
+      },
+      {
+        text: 'Хлябът е НУЖДА! 🍞 Без храна не можем!',
+        visual: 'need-food',
+      },
+      {
+        text: 'Шоколадът е ЖЕЛАНИЕ! 🍫 Вкусен е, но можем без него.',
+        visual: 'want-choco',
+      },
+      {
+        text: 'Когато имаме малко пари, първо купуваме НУЖДИТЕ, после ЖЕЛАНИЯТА!',
+        visual: 'priority',
+      },
+      {
+        text: 'Чудесно! Вече знаеш разликата! Умен си като ФинДо! 🌟',
+        visual: 'celebrate',
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Как да спестяваме',
+    scenes: [
+      {
+        text: 'Здравей! Днес ФинДо ще те научи да СПЕСТЯВАШ пари! 🐷',
+        visual: 'findo-wave',
+      },
+      {
+        text: 'Спестяване значи да не харчиш ВСИЧКИ пари, а да пазиш малко настрана.',
+        visual: 'piggy-intro',
+      },
+      {
+        text: 'Ето касичка! Всеки ден можем да пускаме по малко монетки вътре.',
+        visual: 'piggy-coins',
+      },
+      {
+        text: 'Ако спестяваш по 1 евро на седмица, за 10 седмици ще имаш 10 евро!',
+        visual: 'save-math',
+      },
+      {
+        text: 'С 10 евро можеш да купиш нещо хубаво! Книга, играчка или подарък за мама!',
+        visual: 'goal-items',
+      },
+      {
+        text: 'Нарисувай си цел! Какво искаш да си купиш? Лепи стикери всеки път, когато спестиш!',
+        visual: 'goal-chart',
+      },
+      {
+        text: 'Ти си истински спестител! ФинДо е горд с теб! 🎉⭐',
+        visual: 'celebrate',
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: 'Пазаруване',
+    scenes: [
+      {
+        text: 'Днес отиваме на пазар с ФинДо! Имаме 5 евро! 💰',
+        visual: 'findo-wave',
+      },
+      {
+        text: 'В магазина всяко нещо има ЦЕНА. Цената казва колко пари трябва да платиш.',
+        visual: 'price-tags',
+      },
+      {
+        text: 'Хлябът е 1 евро. Млякото е 1 евро и 50 цента. Бананите са 1 евро и 80 цента.',
+        visual: 'shop-items',
+      },
+      {
+        text: 'Ако купим хляб и мляко, колко ще платим? 1 плюс 1 и половина е 2 евро и 50 цента!',
+        visual: 'calc-add',
+      },
+      {
+        text: 'Имахме 5 евро. Платихме 2 евро и 50 цента. Остава РЕСТО — 2 евро и 50 цента!',
+        visual: 'change',
+      },
+      {
+        text: 'Виждаш ли? Когато купуваш, трябва да СМЯТАШ дали ти стигат парите!',
+        visual: 'think',
+      },
+      {
+        text: 'Ура! Ти вече можеш да пазаруваш умно! Браво, малък финансист! 🌟🎉',
+        visual: 'celebrate',
+      },
+    ],
+  },
+];
+
+// ============================================
+// STATE
+// ============================================
+let currentEp = 0;
+let currentScene = 0;
+let isPlaying = false;
+let isSpeaking = false;
+let synth = window.speechSynthesis;
+let bgVoice = null;
+
+// Find Bulgarian voice
+function findBGVoice() {
+  const voices = synth.getVoices();
+  bgVoice = voices.find(v => v.lang.startsWith('bg')) 
+    || voices.find(v => v.lang.includes('BG'))
+    || voices.find(v => v.name.toLowerCase().includes('bulgarian'))
+    || null;
+}
+synth.onvoiceschanged = findBGVoice;
+findBGVoice();
+
+// ============================================
+// RENDER
+// ============================================
+function renderScenes() {
+  const ep = EPISODES[currentEp];
+  const stage = document.getElementById('stage');
+  
+  // Remove old scenes
+  stage.querySelectorAll('.scene').forEach(s => s.remove());
+  
+  // Create scenes
+  ep.scenes.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'scene';
+    div.id = `scene-${i}`;
+    div.innerHTML = `
+      <div class="findo-container">
+        <div class="findo" id="findo-${i}">🐬</div>
+      </div>
+      <div class="speech-bubble" id="bubble-${i}">${s.text}</div>
+      <div class="visual-area" id="visual-${i}"></div>
+    `;
+    stage.appendChild(div);
+  });
+
+  // Update dots
+  const dots = document.getElementById('progressDots');
+  dots.innerHTML = ep.scenes.map((_, i) => `<div class="dot" id="dot-${i}"></div>`).join('');
+
+  // Update header
+  document.getElementById('epBadge').textContent = `Епизод ${ep.id} от ${EPISODES.length}`;
+  document.getElementById('topicTitle').textContent = ep.title;
+
+  // Reset
+  currentScene = 0;
+  showScene(0);
+}
+
+function showScene(idx) {
+  const ep = EPISODES[currentEp];
+  if (idx < 0 || idx >= ep.scenes.length) return;
+
+  // Hide all scenes
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  
+  // Show current
+  currentScene = idx;
+  const sceneEl = document.getElementById(`scene-${idx}`);
+  sceneEl.classList.add('active');
+
+  // Update dots
+  ep.scenes.forEach((_, i) => {
+    const dot = document.getElementById(`dot-${i}`);
+    dot.className = i < idx ? 'dot done' : i === idx ? 'dot active' : 'dot';
+  });
+
+  // Update counter
+  document.getElementById('sceneCounter').textContent = `${idx + 1} / ${ep.scenes.length}`;
+
+  // Update buttons
+  document.getElementById('prevBtn').disabled = idx === 0;
+
+  // Render visual
+  renderVisual(idx, ep.scenes[idx].visual);
+
+  // Update intro overlay
+  document.getElementById('introOverlay').classList.add('hidden');
+}
+
+function renderVisual(idx, type) {
+  const area = document.getElementById(`visual-${idx}`);
+  area.innerHTML = '';
+
+  const delay = (i) => `animation-delay: ${i * 0.15}s`;
+
+  switch(type) {
+    case 'findo-wave':
+      area.innerHTML = ['✨','🌟','⭐','💫'].map((e, i) =>
+        `<span class="anim-item" style="${delay(i)}">${e}</span>`
+      ).join('');
+      break;
+
+    case 'sparkles':
+      area.innerHTML = ['💡','📚','🎓','🧠','💰'].map((e, i) =>
+        `<span class="anim-item" style="${delay(i)}">${e}</span>`
+      ).join('');
+      break;
+
+    case 'coins-show':
+    case 'euro-coins':
+      area.innerHTML = `
+        <div class="coin-item c1" style="${delay(0)}">1c</div>
+        <div class="coin-item c2" style="${delay(1)}">10c</div>
+        <div class="coin-item c1" style="${delay(2)}">50c</div>
+        <div class="coin-item c2" style="${delay(3)}">1€</div>
+        <div class="coin-item c5" style="${delay(4)}">2€</div>
+      `;
+      break;
+
+    case 'euro-bills':
+    case 'bills-show':
+      area.innerHTML = `
+        <div class="product-card" style="${delay(0)}"><div class="emoji">💶</div><div class="name">5 евро</div><div class="price" style="color:#6B7280">сива</div></div>
+        <div class="product-card" style="${delay(1)}"><div class="emoji">💶</div><div class="name">10 евро</div><div class="price" style="color:#EF4444">червена</div></div>
+        <div class="product-card" style="${delay(2)}"><div class="emoji">💶</div><div class="name">20 евро</div><div class="price" style="color:#3B82F6">синя</div></div>
+      `;
+      break;
+
+    case 'products':
+    case 'shop-items':
+      area.innerHTML = `
+        <div class="product-card" style="${delay(0)}"><div class="emoji">🍞</div><div class="name">Хляб</div><div class="price">1.00€</div></div>
+        <div class="product-card" style="${delay(1)}"><div class="emoji">🥛</div><div class="name">Мляко</div><div class="price">1.50€</div></div>
+        <div class="product-card" style="${delay(2)}"><div class="emoji">🍌</div><div class="name">Банани</div><div class="price">1.80€</div></div>
+        <div class="product-card" style="${delay(3)}"><div class="emoji">🧸</div><div class="name">Играчка</div><div class="price">4.50€</div></div>
+      `;
+      break;
+
+    case 'work':
+      area.innerHTML = ['👩‍💼','👨‍🔧','👩‍🏫','👨‍⚕️','👩‍🍳'].map((e, i) =>
+        `<span class="anim-item" style="${delay(i)}">${e}</span>`
+      ).join('');
+      break;
+
+    case 'smart':
+    case 'think':
+      area.innerHTML = `<span class="anim-item" style="font-size:5rem; ${delay(0)}">🧠</span>
+        <span class="anim-item" style="font-size:3rem; ${delay(1)}">💡</span>`;
+      break;
+
+    case 'celebrate':
+      area.innerHTML = ['🎉','⭐','🏆','🌟','🎊'].map((e, i) =>
+        `<span class="anim-item" style="${delay(i)}; font-size:3.5rem;">${e}</span>`
+      ).join('');
+      createStarsBurst(area);
+      break;
+
+    case 'needs':
+    case 'need-food':
+      area.innerHTML = `<div class="nw-container">
+        <div class="nw-box need" style="${delay(0)}"><h4>✅ НУЖДИ</h4><div class="items">🍞 🥛 👕 🏠</div></div>
+      </div>`;
+      break;
+
+    case 'wants':
+    case 'want-choco':
+      area.innerHTML = `<div class="nw-container">
+        <div class="nw-box want" style="${delay(0)}"><h4>💜 ЖЕЛАНИЯ</h4><div class="items">🍫 🧸 🎮 🍦</div></div>
+      </div>`;
+      break;
+
+    case 'priority':
+      area.innerHTML = `<div class="nw-container">
+        <div class="nw-box need" style="${delay(0)}"><h4>1️⃣ ПЪРВО</h4><div class="items">🍞 🥛 👕</div></div>
+        <div class="nw-box want" style="${delay(1)}"><h4>2️⃣ ПОСЛЕ</h4><div class="items">🍫 🧸 🎮</div></div>
+      </div>`;
+      break;
+
+    case 'piggy-intro':
+    case 'piggy-coins':
+      area.innerHTML = `<div class="piggy-scene">
+        <div class="piggy">🐷</div>
+        <div class="piggy-coins">
+          ${['🪙','🪙','🪙','🪙'].map((c, i) =>
+            `<span class="piggy-coin-anim" style="animation-delay:${0.5 + i*0.4}s">${c}</span>`
+          ).join('')}
+        </div>
+      </div>`;
+      break;
+
+    case 'save-math':
+      area.innerHTML = `<div style="text-align:center;">
+        <div class="anim-item" style="${delay(0)}; font-size:2rem; font-weight:800;">
+          🪙 1€ × 10 седмици = <span style="color:#16A34A; font-size:2.5rem;">10€!</span>
+        </div>
+      </div>`;
+      break;
+
+    case 'goal-items':
+      area.innerHTML = `
+        <div class="product-card" style="${delay(0)}"><div class="emoji">📖</div><div class="name">Книга</div><div class="price">8€</div></div>
+        <div class="product-card" style="${delay(1)}"><div class="emoji">🧸</div><div class="name">Играчка</div><div class="price">10€</div></div>
+        <div class="product-card" style="${delay(2)}"><div class="emoji">🎁</div><div class="name">Подарък</div><div class="price">7€</div></div>
+      `;
+      break;
+
+    case 'goal-chart':
+      area.innerHTML = `<div style="text-align:center;">
+        <div class="anim-item" style="${delay(0)}; font-size:1.5rem;">
+          <div style="display:flex; gap:0.3rem; justify-content:center; flex-wrap:wrap;">
+            ${[1,2,3,4,5,6,7,8,9,10].map(i =>
+              `<span style="background: ${i<=6?'#16A34A':'#E2E8F0'}; color:white; width:36px; height:36px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; animation: pop-in 0.3s ease forwards; animation-delay:${i*0.1}s; opacity:0;">${i<=6?'⭐':i}</span>`
+            ).join('')}
+          </div>
+          <p style="margin-top:0.8rem; font-weight:700; color:#16A34A;">6 от 10 седмици! Продължавай! 💪</p>
+        </div>
+      </div>`;
+      break;
+
+    case 'price-tags':
+      area.innerHTML = ['🏷️ 1€','🏷️ 2€','🏷️ 5€','🏷️ 0.50€'].map((e, i) =>
+        `<span class="anim-item" style="${delay(i)}; font-size:2rem; background:#FEF3C7; padding:0.5rem 1rem; border-radius:12px;">${e}</span>`
+      ).join('');
+      break;
+
+    case 'calc-add':
+      area.innerHTML = `<div style="text-align:center;">
+        <div class="anim-item" style="${delay(0)}; font-size:1.8rem; font-weight:800;">
+          🍞 1.00€ + 🥛 1.50€ = <span style="color:#F59E0B; font-size:2.2rem;">2.50€</span>
+        </div>
+      </div>`;
+      break;
+
+    case 'change':
+      area.innerHTML = `<div style="text-align:center;">
+        <div class="anim-item" style="${delay(0)}; font-size:1.8rem; font-weight:800;">
+          💰 5.00€ − 🛒 2.50€ = <span style="color:#16A34A; font-size:2.2rem;">2.50€ ресто!</span>
+        </div>
+      </div>`;
+      break;
+
+    case 'cent-1':
+      area.innerHTML = `<div class="coin-item c2" style="${delay(0)}; width:60px; height:60px; font-size:1.5rem;">1c</div>`;
+      break;
+
+    case 'cents-all':
+      area.innerHTML = `
+        <div class="coin-item c2" style="${delay(0)}; width:50px; height:50px; font-size:1rem;">2c</div>
+        <div class="coin-item c2" style="${delay(1)}; width:55px; height:55px; font-size:1rem;">5c</div>
+        <div class="coin-item c1" style="${delay(2)}; width:60px; height:60px; font-size:1.1rem;">10c</div>
+        <div class="coin-item c1" style="${delay(3)}; width:65px; height:65px; font-size:1.1rem;">20c</div>
+      `;
+      break;
+
+    case 'big-coins':
+      area.innerHTML = `
+        <div class="coin-item c1" style="${delay(0)}; width:80px; height:80px;">50c</div>
+        <div class="coin-item c5" style="${delay(1)}; width:85px; height:85px;">1€</div>
+      `;
+      break;
+
+    case 'two-euro':
+      area.innerHTML = `<div class="coin-item c5" style="${delay(0)}; width:100px; height:100px; font-size:2.5rem;">2€</div>`;
+      break;
+
+    case 'compare':
+      area.innerHTML = `<div style="text-align:center;">
+        <div class="anim-item" style="${delay(0)}; font-size:1.5rem; font-weight:700;">
+          <span>1c</span> < <span>10c</span> < <span>50c</span> < <span style="color:#F59E0B; font-size:2rem;">1€</span> < <span style="color:#16A34A; font-size:2.3rem;">2€</span>
+        </div>
+      </div>`;
+      break;
+
+    default:
+      area.innerHTML = `<span class="anim-item" style="font-size:3rem;">✨</span>`;
+  }
+}
+
+function createStarsBurst(container) {
+  const burst = document.createElement('div');
+  burst.className = 'stars-burst';
+  for (let i = 0; i < 8; i++) {
+    const star = document.createElement('span');
+    star.className = 'star-particle';
+    star.textContent = ['⭐','🌟','✨','💫'][i % 4];
+    const angle = (i / 8) * Math.PI * 2;
+    star.style.setProperty('--tx', `${Math.cos(angle) * 80}px`);
+    star.style.setProperty('--ty', `${Math.sin(angle) * 80}px`);
+    star.style.animationDelay = `${i * 0.08}s`;
+    burst.appendChild(star);
+  }
+  container.appendChild(burst);
+}
+
+// ============================================
+// SPEECH
+// ============================================
+function speakText(text, onEnd) {
+  synth.cancel();
+  
+  const clean = text.replace(/[🐬✨🌟⭐💫💡📚🎓🧠💰🪙🎉🏆🎊💶🐷💪🍞🥛🍌🧸👩‍💼👨‍🔧👩‍🏫👨‍⚕️👩‍🍳🍫🎮🍦👕🏠🎁📖💜🏷️🛒]/g, '').trim();
+  
+  const utter = new SpeechSynthesisUtterance(clean);
+  utter.lang = 'bg-BG';
+  utter.rate = parseFloat(document.getElementById('speedSelect').value);
+  utter.pitch = 1.1;
+  if (bgVoice) utter.voice = bgVoice;
+
+  const findo = document.getElementById(`findo-${currentScene}`);
+  const volIcon = document.getElementById('volIcon');
+
+  utter.onstart = () => {
+    isSpeaking = true;
+    if (findo) findo.classList.add('talking');
+    volIcon.textContent = '🔊';
+    volIcon.classList.add('speaking');
+  };
+  utter.onend = () => {
+    isSpeaking = false;
+    if (findo) findo.classList.remove('talking');
+    volIcon.textContent = '🔇';
+    volIcon.classList.remove('speaking');
+    if (onEnd) onEnd();
+  };
+  utter.onerror = () => {
+    isSpeaking = false;
+    if (findo) findo.classList.remove('talking');
+    if (onEnd) onEnd();
+  };
+
+  synth.speak(utter);
+}
+
+// ============================================
+// PLAYBACK CONTROLS
+// ============================================
+function startLesson() {
+  document.getElementById('introOverlay').classList.add('hidden');
+  renderScenes();
+  isPlaying = true;
+  updatePlayBtn();
+  playCurrentScene();
+}
+
+function playCurrentScene() {
+  const ep = EPISODES[currentEp];
+  showScene(currentScene);
+  
+  speakText(ep.scenes[currentScene].text, () => {
+    if (!isPlaying) return;
+    // Auto-advance after 1s pause
+    setTimeout(() => {
+      if (!isPlaying) return;
+      if (currentScene < ep.scenes.length - 1) {
+        currentScene++;
+        playCurrentScene();
+      } else {
+        isPlaying = false;
+        updatePlayBtn();
+      }
+    }, 1200);
+  });
+}
+
+function togglePlay() {
+  if (isPlaying) {
+    isPlaying = false;
+    synth.cancel();
+  } else {
+    isPlaying = true;
+    playCurrentScene();
+  }
+  updatePlayBtn();
+}
+
+function updatePlayBtn() {
+  document.getElementById('playBtn').textContent = isPlaying ? '⏸️' : '▶️';
+}
+
+function nextScene() {
+  const ep = EPISODES[currentEp];
+  synth.cancel();
+  isPlaying = false;
+  updatePlayBtn();
+  if (currentScene < ep.scenes.length - 1) {
+    currentScene++;
+    showScene(currentScene);
+  } else if (currentEp < EPISODES.length - 1) {
+    currentEp++;
+    showIntro();
+  }
+}
+
+function prevScene() {
+  synth.cancel();
+  isPlaying = false;
+  updatePlayBtn();
+  if (currentScene > 0) {
+    currentScene--;
+    showScene(currentScene);
+  }
+}
+
+function replayScene() {
+  synth.cancel();
+  isPlaying = true;
+  updatePlayBtn();
+  playCurrentScene();
+}
+
+function showIntro() {
+  const overlay = document.getElementById('introOverlay');
+  overlay.classList.remove('hidden');
+  const ep = EPISODES[currentEp];
+  overlay.querySelector('.intro-title').textContent = `🌟 ${ep.title} 🌟`;
+  overlay.querySelector('.intro-subtitle').textContent = `Епизод ${ep.id} — Учи с ФинДо!`;
+}
+
+function showEpisodeList() {
+  const modal = document.getElementById('epModal');
+  modal.style.display = 'flex';
+  const list = document.getElementById('epList');
+  list.innerHTML = EPISODES.map((ep, i) => `
+    <button onclick="selectEpisode(${i})" style="display:block; width:100%; padding:0.8rem; margin-bottom:0.5rem; border:2px solid ${i===currentEp?'#F59E0B':'#E2E8F0'}; background:${i===currentEp?'#FEF3C7':'white'}; border-radius:12px; font-family:inherit; font-size:1rem; font-weight:600; cursor:pointer; text-align:left;">
+      ${i===currentEp?'▶️':''} ${ep.id}. ${ep.title}
+    </button>
+  `).join('');
+}
+
+function hideEpisodeList() {
+  document.getElementById('epModal').style.display = 'none';
+}
+
+function selectEpisode(idx) {
+  synth.cancel();
+  isPlaying = false;
+  updatePlayBtn();
+  currentEp = idx;
+  currentScene = 0;
+  hideEpisodeList();
+  showIntro();
+}
+
+// Init
+renderScenes();
+</script>
+</body>
+</html>
